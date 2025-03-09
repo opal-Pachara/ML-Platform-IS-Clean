@@ -13,23 +13,16 @@ from show_nn import show_nn
 def connect_to_gsheet():
     scope = ["https://spreadsheets.google.com/feeds", "https://www.googleapis.com/auth/drive"]
     try:
-        if "GOOGLE_SHEETS_CREDENTIALS" in st.secrets:
-            creds_dict = json.loads(st.secrets["GOOGLE_SHEETS_CREDENTIALS"])
-            st.write("ใช้ credentials จาก Streamlit Secrets")
-        else:
-            credentials_path = "model/google-sheets-key.json"
-            if not os.path.exists(credentials_path):
-                st.error(f"ไม่พบไฟล์ credentials ที่ {os.path.abspath(credentials_path)}")
-                return None
-            st.write(f"ใช้ไฟล์ JSON จาก {credentials_path}")
-            with open(credentials_path, 'r') as f:
-                creds_dict = json.load(f)
+        credentials_path = "model/google-sheets-key.json"
+        if not os.path.exists(credentials_path):
+            st.error(f"ไม่พบไฟล์ credentials ที่ {os.path.abspath(credentials_path)}")
+            return None
+        with open(credentials_path, 'r') as f:
+            creds_dict = json.load(f)
         
-        st.write("เนื้อหา JSON (บางส่วน):", {k: creds_dict[k] for k in ['type', 'project_id', 'client_email']})
         creds = ServiceAccountCredentials.from_json_keyfile_dict(creds_dict, scope)
         client = gspread.authorize(creds)
         sheet = client.open("VisitorLog").sheet1
-        st.success("เชื่อมต่อ Google Sheets สำเร็จ")
         return sheet
     except Exception as e:
         st.error(f"เกิดข้อผิดพลาดในการเชื่อมต่อ Google Sheets: {str(e)}")
