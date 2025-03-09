@@ -1,6 +1,6 @@
 import streamlit as st
 from PIL import Image
-import gspread
+# import gspread
 from oauth2client.service_account import ServiceAccountCredentials
 from datetime import datetime
 import os
