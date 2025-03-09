@@ -1,5 +1,5 @@
 import streamlit as st
-import torch
+# import torch
 from datetime import time
 
 def load_model(model_path):

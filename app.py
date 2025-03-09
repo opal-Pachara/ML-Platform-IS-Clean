@@ -8,7 +8,7 @@ import json
 from show_introduction import show_introduction
 from show_model_development import show_model_development
 from show_ml import show_ml
-from show_nn import show_nn
+# from show_nn import show_nn
 
 def connect_to_gsheet():
     scope = ["https://spreadsheets.google.com/feeds", "https://www.googleapis.com/auth/drive"]
