@@ -1,8 +1,8 @@
 import streamlit as st
 from PIL import Image
-# import gspread
+import gspread
 from oauth2client.service_account import ServiceAccountCredentials
-# from datetime import datetime
+from datetime import datetime
 import os
 import json
 from show_introduction import show_introduction
@@ -19,7 +19,6 @@ def connect_to_gsheet():
             return None
         with open(credentials_path, 'r') as f:
             creds_dict = json.load(f)
-        
         creds = ServiceAccountCredentials.from_json_keyfile_dict(creds_dict, scope)
         client = gspread.authorize(creds)
         sheet = client.open("VisitorLog").sheet1
