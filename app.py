@@ -5,44 +5,18 @@ from oauth2client.service_account import ServiceAccountCredentials
 from datetime import datetime
 import os
 import json
-import requests  # เพิ่ม import สำหรับ requests เพื่อดึงไฟล์จาก GitHub
 from show_introduction import show_introduction
 from show_model_development import show_model_development
 from show_ml import show_ml
 # from show_nn import show_nn
 
-def download_credentials_from_github():
-    # URL ของไฟล์ json ที่ซ่อนอยู่ใน GitHub
-    file_url = "https://raw.githubusercontent.com/opal-Pachara/ML-Platform-IS-Clean/main/model/google-sheets-key.json"
-    
-    try:
-        # ใช้ requests ดึงไฟล์จาก GitHub
-        response = requests.get(file_url)
-        response.raise_for_status()  # เช็คว่าเกิดข้อผิดพลาดหรือไม่
-
-        # บันทึกไฟล์ที่ดาวน์โหลดมาไว้ในเครื่อง
-        credentials_path = "model/google-sheets-key.json"
-        with open(credentials_path, 'wb') as f:
-            f.write(response.content)
-
-        return credentials_path
-    except Exception as e:
-        st.error(f"ไม่สามารถดาวน์โหลดไฟล์จาก GitHub ได้: {str(e)}")
-        return None
-
 def connect_to_gsheet():
     scope = ["https://spreadsheets.google.com/feeds", "https://www.googleapis.com/auth/drive"]
     try:
         credentials_path = "model/google-sheets-key.json"
-        
-        # หากไม่พบไฟล์ในเครื่อง ให้ดึงไฟล์จาก GitHub
         if not os.path.exists(credentials_path):
-            st.warning("ไม่พบไฟล์ credentials ในเครื่อง กำลังดาวน์โหลดจาก GitHub...")
-            credentials_path = download_credentials_from_github()
-            if not credentials_path:
-                return None
-        
-        # อ่านไฟล์ JSON และเชื่อมต่อกับ Google Sheets
+            st.error(f"ไม่พบไฟล์ credentials ที่ {os.path.abspath(credentials_path)}")
+            return None
         with open(credentials_path, 'r') as f:
             creds_dict = json.load(f)
         creds = ServiceAccountCredentials.from_json_keyfile_dict(creds_dict, scope)
@@ -71,7 +45,7 @@ def main():
         st.write("ไม่สามารถเชื่อมต่อ Google Sheets ได้ กรุณาตรวจสอบไฟล์คีย์หรือการตั้งค่า")
         return
 
-    st.markdown(""" 
+    st.markdown("""
         <style>
         @import url('https://fonts.googleapis.com/css2?family=Athiti:wght@400&display=swap');
         html, body, [class*="css"] {
